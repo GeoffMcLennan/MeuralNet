@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace MeuralNet
 {
@@ -44,7 +45,38 @@ namespace MeuralNet
 
         public Network(String filename)
         {
+            XmlDocument xml = new XmlDocument();
+            xml.Load(filename);
+            XmlNodeList neuralNet = xml.SelectNodes("NeuralNet");
+            XmlNodeList layers = neuralNet[0].SelectNodes("Layer");
+            NumLayers = layers.Count + 1;
+            Sizes = new int[NumLayers];
+            Biases = new double[layers.Count][,];
+            Weights = new double[layers.Count][,];
 
+            for (int i = 0; i < layers.Count; i++)
+            {
+                XmlNodeList weights = layers[i].SelectNodes("Weights");
+                XmlNodeList rows = weights[0].SelectNodes("Row");
+                Sizes[i] = rows[i].SelectNodes("Col").Count;
+                Sizes[i + 1] = rows.Count;
+                Weights[i] = new double[Sizes[i + 1], Sizes[i]];
+                Biases[i] = new double[Sizes[i + 1], 1];
+
+                XmlNodeList biases = layers[i].SelectNodes("Biases");
+                XmlNodeList bRows = biases[0].SelectNodes("Row");
+
+                for (int y = 0; y < Sizes[i + 1]; y++)
+                {
+                    XmlNodeList cols = rows[i].SelectNodes("Col");
+                    for (int x = 0; x < Sizes[i]; x++)
+                    {
+                        Weights[i][y, x] = Double.Parse(cols[x].InnerText);
+                    }
+
+                    Biases[i][y, 0] = Double.Parse(bRows[y].InnerText);
+                }
+            }
         }
 
         public void SGD(List<Tuple<double[,], int>> trainingData, int epochs, int batchSize, double learningRate, List<Tuple<double[,], int>> testData)
@@ -192,6 +224,46 @@ namespace MeuralNet
             return count;
         }
 
+        public void Save(String filename)
+        {
+            XmlDocument output = new XmlDocument();
+            XmlNode root = output.CreateElement("NeuralNet");
+            output.AppendChild(root);
+
+            for (int i = 0; i < Sizes.Length - 1; i++)
+            {
+                XmlNode layer = output.CreateElement("Layer");
+                XmlNode weight = output.CreateElement("Weights");
+                XmlNode bias = output.CreateElement("Biases");
+                layer.AppendChild(weight);
+                layer.AppendChild(bias);
+
+                for (int y = 0; y < Weights[i].GetLength(0); y++)
+                {
+                    XmlNode wRow = output.CreateElement("Row");
+
+                    for (int x = 0; x < Weights[i].GetLength(1); x++)
+                    {
+                        // Add weight
+                        XmlNode col = output.CreateElement("Col");
+                        col.InnerText = "" + Weights[i][y, x];
+                        wRow.AppendChild(col);
+                    }
+                    weight.AppendChild(wRow);
+                }
+
+                for (int j = 0; j < Biases[i].GetLength(0); j++)
+                {
+                    XmlNode b = output.CreateElement("Row");
+                    b.InnerText = "" + Biases[i][j, 0];
+                    bias.AppendChild(b);
+                }
+                root.AppendChild(layer);
+            }
+
+            output.Save(filename);
+        }
+
         public static double Sigmoid(double z)
         {
             return 1.0 / (1.0 + Math.Exp(-z));
@@ -263,8 +335,12 @@ namespace MeuralNet
             DataParser testing = new DataParser("t10k-images.idx3-ubyte", "t10k-labels.idx1-ubyte");
 
             Network net = new Network(new int[] { 784, 30, 10 });
-            net.SGD(training.GetData()/*.GetRange(0, 10000)*/, 30, 10, 3.0, testing.GetData());
+            //Network net = new Network("BestBrainchild.xml");
+            net.SGD(training.GetData()/*.GetRange(0, 10000)*/, 1, 10, 3.0, testing.GetData());
 
+            //net.Evaluate(testing.GetData());
+
+            net.Save("BestBrainchild2.xml");
 
             //Network net = new Network(new int[] { 3, 5, 2 });
             //double[,] input = new double[,] { { 3 }, { 4 }, { 5 } };
