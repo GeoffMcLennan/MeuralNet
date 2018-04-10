@@ -68,7 +68,7 @@ namespace MeuralNet
 
                 for (int y = 0; y < Sizes[i + 1]; y++)
                 {
-                    XmlNodeList cols = rows[i].SelectNodes("Col");
+                    XmlNodeList cols = rows[y].SelectNodes("Col");
                     for (int x = 0; x < Sizes[i]; x++)
                     {
                         Weights[i][y, x] = Double.Parse(cols[x].InnerText);
@@ -197,6 +197,22 @@ namespace MeuralNet
                 output = Sigmoid(Gumpy.Add(Gumpy.Dot(Weights[i], output), Biases[i]));
             }
             return output;
+        }
+
+        public int Evaluate(double[,] rawInput)
+        {
+            double[,] output = FeedForward(rawInput);
+            int maxIndex = 0;
+            double maxVal = output[0, 0];
+            for (int j = 1; j < output.GetLength(0); j++)
+            {
+                if (output[j, 0] > maxVal)
+                {
+                    maxIndex = j;
+                    maxVal = output[j, 0];
+                }
+            }
+            return maxIndex;
         }
 
         public int Evaluate(List<Tuple<double[,], int>> input)
@@ -335,12 +351,12 @@ namespace MeuralNet
             DataParser testing = new DataParser("t10k-images.idx3-ubyte", "t10k-labels.idx1-ubyte");
 
             Network net = new Network(new int[] { 784, 30, 10 });
-            //Network net = new Network("BestBrainchild.xml");
+            //Network net = new Network("BrainChild4.xml");
             net.SGD(training.GetData()/*.GetRange(0, 10000)*/, 1, 10, 3.0, testing.GetData());
 
-            //net.Evaluate(testing.GetData());
+            //System.Diagnostics.Debug.WriteLine(net.Evaluate(testing.GetData()) + " / " + testing.GetData().Count);
 
-            net.Save("BestBrainchild2.xml");
+            net.Save("BestBrainchild3.xml");
 
             //Network net = new Network(new int[] { 3, 5, 2 });
             //double[,] input = new double[,] { { 3 }, { 4 }, { 5 } };
