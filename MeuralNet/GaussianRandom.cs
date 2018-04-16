@@ -12,6 +12,11 @@ namespace MeuralNet
         private double StdDev;
         private Random rand;
 
+        /*
+         * Sets up the parameters for the random generator
+         * Mean will be the value that all values are centered around
+         * StdDev will be the difference from the mean that most values will fall into
+         */
         public GaussianRandom(double mean, double stdDev)
         {
             Mean = mean;
@@ -20,6 +25,9 @@ namespace MeuralNet
             rand = new Random();
         }
 
+        /*
+         * Samples a single double
+         */
         public double Sample()
         {
             double u1 = 1 - rand.NextDouble();
@@ -29,6 +37,9 @@ namespace MeuralNet
             return Mean + StdDev * randStdNormal;
         }
 
+        /*
+         * Samples doubles into an array of the given length
+         */ 
         public double[] Sample(int length)
         {
             double[] output = new double[length];
@@ -41,6 +52,9 @@ namespace MeuralNet
             return output;
         }
 
+        /*
+         * Samples doubles into a 2D matrix with the given width and height
+         */
         public double[,] Sample(int width, int height)
         {
             double[,] output = new double[height, width];

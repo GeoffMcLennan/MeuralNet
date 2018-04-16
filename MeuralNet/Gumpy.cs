@@ -6,22 +6,28 @@ using System.Threading.Tasks;
 
 namespace MeuralNet
 {
+    /*
+     * Imitates the relevent python Numpy functionality
+     */
     class Gumpy
     {
-        public static double[,] Randn(int i, int j)
-        {
-            double[,] output = new double[i, j];
+        //public static double[,] Randn(int i, int j)
+        //{
+        //    double[,] output = new double[i, j];
 
-            return output;
-        }
+        //    return output;
+        //}
 
-        public static double[] Randn(int i)
-        {
-            double[] output = new double[i];
+        //public static double[] Randn(int i)
+        //{
+        //    double[] output = new double[i];
 
-            return output;
-        }
+        //    return output;
+        //}
 
+        /*
+         * Transposes the given matrix
+         */
         public static double[,] Transpose(double[,] input)
         {
             double[,] output = new double[input.GetLength(1), input.GetLength(0)];
@@ -35,6 +41,9 @@ namespace MeuralNet
             return output;
         }
 
+        /*
+         * Gives the resulting matrix of the dot product of the the first parameter with the second
+         */
         public static double[,] Dot(double[,] left, double[,] right)
         {
             if (left.GetLength(1) != right.GetLength(0)) return null;
@@ -55,6 +64,9 @@ namespace MeuralNet
             return output;
         }
 
+        /*
+         * Multiplies the two matrices together
+         */
         public static double[,] Multiply(double[,] left, double[,] right)
         {
             if ((left.GetLength(0) != right.GetLength(0)) || (left.GetLength(1) != right.GetLength(1))) return null;
@@ -83,6 +95,9 @@ namespace MeuralNet
             return output;
         }
 
+        /*
+         * Adds the two matrices together point by point
+         */
         public static double[,] Add(double[,] left, double[,] right)
         {
             if ((left.GetLength(0) != right.GetLength(0)) || (left.GetLength(1) != right.GetLength(1))) return null;
@@ -98,6 +113,9 @@ namespace MeuralNet
             return output;
         }
 
+        /*
+         * Subtracts the two matrices together point by point
+         */
         public static double[,] Subtract(double[,] left, double[,] right)
         {
             if ((left.GetLength(0) != right.GetLength(0)) || (left.GetLength(1) != right.GetLength(1))) return null;

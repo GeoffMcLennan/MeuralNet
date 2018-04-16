@@ -16,6 +16,9 @@ namespace MeuralNet
 
         private GaussianRandom rand;
 
+        /*
+         * Generates a new network with the given layer sizes and random weights and biases
+         */
         public Network(int[] sizes)
         {
             NumLayers = sizes.Length;
@@ -43,6 +46,9 @@ namespace MeuralNet
             }
         }
 
+        /*
+         * Generates a network from an existing network file
+         */
         public Network(String filename)
         {
             XmlDocument xml = new XmlDocument();
@@ -79,6 +85,9 @@ namespace MeuralNet
             }
         }
 
+        /*
+         * Takes all training data, breaks it into batches and process them, then run the test data if it exists
+         */
         public void SGD(List<Tuple<double[,], int>> trainingData, int epochs, int batchSize, double learningRate, List<Tuple<double[,], int>> testData)
         {
             for (int i = 0; i < epochs; i++)
@@ -109,6 +118,9 @@ namespace MeuralNet
             }
         }
 
+        /*
+         * Processes a batch by running each input, summing the nablas and updating the weights and biases at the end
+         */
         public void UpdateBatch(List<Tuple<double[,], int>> batch, double learningRate)
         {
             double[][,] nablaB = GenBlankBias();
@@ -199,6 +211,9 @@ namespace MeuralNet
             return output;
         }
 
+        /*
+         * Evaluates the output and provides the selected index
+         */
         public int Evaluate(double[,] rawInput)
         {
             double[,] output = FeedForward(rawInput);
@@ -215,6 +230,9 @@ namespace MeuralNet
             return maxIndex;
         }
 
+        /*
+         * Evaluates a test data set and gives a report of how many were accurate
+         */ 
         public int Evaluate(List<Tuple<double[,], int>> input)
         {
             int count = 0;
@@ -240,6 +258,9 @@ namespace MeuralNet
             return count;
         }
 
+        /*
+         * Saves the current state of the network to XML
+         */
         public void Save(String filename)
         {
             XmlDocument output = new XmlDocument();

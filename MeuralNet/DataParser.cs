@@ -11,6 +11,9 @@ namespace MeuralNet
     {
         List<Tuple<double[,], int>> data;
 
+        /*
+         * Parses the MNIST data files
+         */
         public DataParser(String images, String labels)
         {
             byte[] imageBytes = File.ReadAllBytes(images);
