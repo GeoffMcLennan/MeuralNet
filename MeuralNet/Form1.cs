@@ -58,6 +58,8 @@ namespace MeuralNet
                 }
             }
 
+            //NetworkTester.Test();
+
             panel1.MouseDown += new MouseEventHandler(P1MouseDown);
             panel1.MouseUp += new MouseEventHandler(P1MouseUp);
             panel1.MouseMove += new MouseEventHandler(P1Move);
